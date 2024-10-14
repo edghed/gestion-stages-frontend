@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import StudentItem from './StudentItem';
 
 function ListStudentsPage() {
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [students, setStudents] = useState([]);  
+  const [loading, setLoading] = useState(true);  
+  const [error, setError] = useState(null);  
 
-  const students = [
-    { id: 1, name: 'Étudiant 1', email: 'etudiant1@example.com', department: 'Informatique' },
-    { id: 2, name: 'Étudiant 2', email: 'etudiant2@example.com', department: 'Mathématiques' },
-    { id: 3, name: 'Étudiant 3', email: 'etudiant3@example.com', department: 'Physique' }
-  ];
+  // Fonction pour récupérer les étudiants depuis le backend
+  useEffect(() => {
+    axios.get('http://localhost:8080/students')
+      .then(response => {
+        setStudents(response.data);  
+        setLoading(false);  
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des étudiants', error);
+        setError("Erreur lors du chargement des étudiants");
+        setLoading(false);
+      });
+  }, []);
 
-  const showDetails = (student) => {
-    setSelectedStudent(student);
+  // Fonction pour supprimer un étudiant de la liste
+  const handleDelete = (id) => {
+    setStudents(students.filter(student => student.id !== id)); // Mettre à jour la liste après suppression
   };
+
+  if (loading) {
+    return <p>Chargement des étudiants...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div>
       <h1>Liste des Étudiants</h1>
       <ul className="list-group">
         {students.map(student => (
-          <StudentItem key={student.id} student={student} onShowDetails={showDetails} />
+          <StudentItem key={student.id} student={student} onDelete={handleDelete} />
         ))}
       </ul>
-
-      {/* Afficher les détails de l'étudiant sélectionné */}
-      {selectedStudent && (
-        <div style={{ marginTop: '20px' }}>
-          <h2>Résumé de {selectedStudent.name}</h2>
-          <p>Email : {selectedStudent.email}</p>
-          <p>Département : {selectedStudent.department}</p>
-        </div>
-      )}
     </div>
   );
 }

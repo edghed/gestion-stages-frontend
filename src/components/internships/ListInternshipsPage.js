@@ -1,36 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import InternshipItem from './InternshipItem';
 
 function ListInternshipsPage() {
-  const [selectedInternship, setSelectedInternship] = useState(null);
+  const [stages, setStages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const internships = [
-    { id: 1, title: 'Stage Développement Web', company: 'Entreprise A', location: 'Paris' },
-    { id: 2, title: 'Stage Data Science', company: 'Entreprise B', location: 'Lyon' },
-    { id: 3, title: 'Stage Cybersécurité', company: 'Entreprise C', location: 'Marseille' }
-  ];
+  useEffect(() => {
+    axios.get('http://localhost:8080/stages')
+      .then(response => {
+        setStages(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des stages', error);
+        setError("Erreur lors du chargement des stages");
+        setLoading(false);
+      });
+  }, []);
 
-  const showDetails = (internship) => {
-    setSelectedInternship(internship);
+  const handleDelete = (id) => {
+    axios.delete(`http://localhost:8080/stages/${id}`)
+      .then(() => {
+        setStages(stages.filter(stage => stage.id !== id));
+      })
+      .catch(error => {
+        console.error('Erreur lors de la suppression du stage', error);
+        setError("Erreur lors de la suppression du stage");
+      });
   };
+
+  if (loading) {
+    return <p>Chargement des stages...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div>
       <h1>Liste des Stages</h1>
       <ul className="list-group">
-        {internships.map(internship => (
-          <InternshipItem key={internship.id} internship={internship} onShowDetails={showDetails} />
-        ))}
+        {stages.length > 0 ? (
+          stages.map(stage => (
+            <InternshipItem
+              key={stage.id}
+              stage={stage}
+              onDelete={() => handleDelete(stage.id)} // Assurez-vous que cette prop est correctement passée en tant que fonction
+            />
+          ))
+        ) : (
+          <p>Aucun stage disponible.</p>
+        )}
       </ul>
-
-      {/* Afficher les détails du stage sélectionné */}
-      {selectedInternship && (
-        <div style={{ marginTop: '20px' }}>
-          <h2>Résumé du stage : {selectedInternship.title}</h2>
-          <p>Entreprise : {selectedInternship.company}</p>
-          <p>Lieu : {selectedInternship.location}</p>
-        </div>
-      )}
     </div>
   );
 }

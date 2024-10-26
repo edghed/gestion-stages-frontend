@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import ListStudentsPage from './components/students/ListStudentsPage';
 import ViewStudentPage from './components/students/ViewStudentPage';
-import ListStagesPage from './components/enterprises/ListStagesPage';
-import ViewStagePage from './components/enterprises/ViewStagesPage';
 import ListSupervisorsPage from './components/supervisors/ListSupervisorsPage';
 import ViewSupervisorPage from './components/supervisors/ViewSupervisorPage';
 import AddStudentPage from './components/students/AddStudentPage';
 import UpdateStudentForm from './components/students/UpdateStudentForm';
-
+import UpdateStageForm from './components/internships/UpdateStageForm';
+import AddStageForm from './components/internships/AddStageForm';
+import ViewInternshipPage from './components/internships/ViewInternshipPage';
+import ListInternshipPage from './components/internships/ListInternshipsPage';
 
 function App() {
   return (
@@ -25,8 +26,11 @@ function App() {
 
 
           {/* Routes pour les stages */}
-          <Route path="/enterprises" element={<ListStagesPage />} />
-          <Route path="/enterprises/:id" element={<ViewStagePage />} />
+          <Route path="/stages" element={<ListInternshipPage />} />
+          <Route path="/stages/:id" element={<ViewInternshipPage />} />
+          <Route path="/add-stage" element={<AddStageForm />} />
+          <Route path="/update-stage/:id" element={<UpdateStageForm />} />
+          <Route path="/" element={<h1>Bienvenue dans l'application de gestion des stages</h1>} />
 
           {/* Routes pour les tuteurs */}
           <Route path="/supervisors" element={<ListSupervisorsPage />} />

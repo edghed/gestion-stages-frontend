@@ -1,47 +1,50 @@
+// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import ListStudentsPage from './components/students/ListStudentsPage';
 import ViewStudentPage from './components/students/ViewStudentPage';
-import ListSupervisorsPage from './components/supervisors/ListSupervisorsPage';
-import ViewSupervisorPage from './components/supervisors/ViewSupervisorPage';
-import AddStudentPage from './components/students/AddStudentPage';
-import UpdateStudentForm from './components/students/UpdateStudentForm';
-import UpdateStageForm from './components/internships/UpdateStageForm';
-import AddStageForm from './components/internships/AddStageForm';
-import ViewInternshipPage from './components/internships/ViewInternshipPage';
 import ListInternshipPage from './components/internships/ListInternshipsPage';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage'; // Import du formulaire d'inscription
+import { AuthProvider, useAuth } from './components/AuthContext';
+
+function PrivateRoute({ element }) {
+    const { isAuthenticated } = useAuth();
+    return isAuthenticated ? element : <Navigate to="/login" />;
+}
 
 function App() {
-  return (
-    <Router>
-      <NavBar />
-      <div className="container">
-        <Routes>
-          {/* Routes pour les étudiants */}
-          <Route path="/students" element={<ListStudentsPage />} />
-          <Route path="/students/:id" element={<ViewStudentPage />} />
-          <Route path="/students/update/:id" element={<UpdateStudentForm />} />
-          <Route path="/add-student" element={<AddStudentPage />} />
-
-
-          {/* Routes pour les stages */}
-          <Route path="/stages" element={<ListInternshipPage />} />
-          <Route path="/stages/:id" element={<ViewInternshipPage />} />
-          <Route path="/add-stage" element={<AddStageForm />} />
-          <Route path="/update-stage/:id" element={<UpdateStageForm />} />
-          <Route path="/" element={<h1>Bienvenue dans l'application de gestion des stages</h1>} />
-
-          {/* Routes pour les tuteurs */}
-          <Route path="/supervisors" element={<ListSupervisorsPage />} />
-          <Route path="/supervisors/:id" element={<ViewSupervisorPage />} />
-
-          {/* Route par défaut */}
-          <Route path="/" element={<h1>Bienvenue dans l'application de gestion des stages</h1>} />
-        </Routes>
-      </div>
-    </Router>
-  );
+    return (
+        <AuthProvider>
+            <Router>
+                <NavBar />
+                <div className="container">
+                    <Routes>
+                        <Route 
+                            path="/" 
+                            element={
+                                <div>
+                                    <h1>Bienvenue dans l'application de gestion des stages</h1>
+                                    <Link to="/login">
+                                        <button>Se connecter</button>
+                                    </Link>
+                                    <Link to="/register" style={{ marginLeft: '10px' }}>
+                                        <button>S'inscrire</button>
+                                    </Link>
+                                </div>
+                            } 
+                        />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} /> {/* Route pour l'inscription */}
+                        <Route path="/students" element={<PrivateRoute element={<ListStudentsPage />} />} />
+                        <Route path="/students/:id" element={<PrivateRoute element={<ViewStudentPage />} />} />
+                        <Route path="/stages" element={<PrivateRoute element={<ListInternshipPage />} />} />
+                    </Routes>
+                </div>
+            </Router>
+        </AuthProvider>
+    );
 }
 
 export default App;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import useAxios from '../useAxios';
 
 const StageSchema = Yup.object().shape({
   title: Yup.string()
@@ -19,13 +19,14 @@ const StageSchema = Yup.object().shape({
 function UpdateStageForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const axiosInstance = useAxios(); 
   const [stage, setStage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/stages/${id}`)
+    axiosInstance.get(`/stages/${id}`)
       .then(response => {
         setStage(response.data);
         setLoading(false);
@@ -35,7 +36,7 @@ function UpdateStageForm() {
         setError("Erreur lors du chargement du stage");
         setLoading(false);
       });
-  }, [id]);
+  }, [id, axiosInstance]);
 
   if (loading) {
     return <p>Chargement des informations du stage...</p>;
@@ -59,7 +60,7 @@ function UpdateStageForm() {
           }}
           validationSchema={StageSchema}
           onSubmit={(values, { setSubmitting }) => {
-            axios.put(`http://localhost:8080/stages/${id}`, values)
+            axiosInstance.put(`/stages/${id}`, values)
               .then(() => {
                 setSuccessMessage("Stage mis à jour avec succès !");
                 setSubmitting(false);

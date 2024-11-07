@@ -1,4 +1,3 @@
-// src/components/LoginPage.js
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
@@ -8,20 +7,44 @@ const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { authToken, login } = useAuth(); 
     const navigate = useNavigate();
+
+    
+    const axiosInstance = axios.create({
+        baseURL: 'http://localhost:8080',
+    });
+
+ 
+    axiosInstance.interceptors.request.use(
+        (config) => {
+            if (authToken) {
+                config.headers['Authorization'] = `Bearer ${authToken}`;
+            }
+            return config;
+        },
+        (error) => Promise.reject(error)
+    );
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/login', {}, {
-                auth: { username, password },
+          
+            const response = await axiosInstance.post('/api/auth/login', {
+                email: username,
+                password: password
             });
 
-            const { token, role } = response.data; // Assume the backend returns token and role
+            
+            const { token, role } = response.data;
+
+            
             login(token, role);
 
-            // Redirect based on role
+           
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+         
             if (role === 'ADMIN') {
                 navigate('/admin-dashboard');
             } else if (role === 'USER') {
@@ -30,6 +53,7 @@ const LoginPage = () => {
                 navigate('/access-denied');
             }
         } catch (err) {
+            console.error("Erreur de connexion", err.response); 
             setError("Échec de la connexion. Vérifiez vos identifiants.");
         }
     };

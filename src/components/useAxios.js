@@ -1,19 +1,18 @@
-// axiosInstance.js
-import axios from 'axios';
-import { useContext } from 'react';
-import { AuthContext } from './AuthContext';
+import axios, * as others from 'axios';
+import { useAuth } from './AuthContext';
 
 const useAxios = () => {
-  const { auth } = useContext(AuthContext);
+  const { authToken } = useAuth();  
 
   const instance = axios.create({
     baseURL: 'http://localhost:8080',
   });
 
+  
   instance.interceptors.request.use(
     (config) => {
-      if (auth && auth.token) {
-        config.headers['Authorization'] = `Basic ${auth.token}`;
+      if (authToken) {  
+        config.headers['Authorization'] = `Bearer ${authToken}`;
       }
       return config;
     },

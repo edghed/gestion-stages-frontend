@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import useAxios from '../useAxios'; 
 
-// Schéma de validation avec Yup
+
 const StageSchema = Yup.object().shape({
   title: Yup.string()
     .min(2, 'Le titre est trop court!')
@@ -16,7 +16,8 @@ const StageSchema = Yup.object().shape({
 });
 
 function AddStageForm() {
-  const [successMessage, setSuccessMessage] = useState(''); // Message de succès après ajout
+  const axiosInstance = useAxios(); 
+  const [successMessage, setSuccessMessage] = useState(''); 
 
   return (
     <div>
@@ -30,14 +31,14 @@ function AddStageForm() {
         }}
         validationSchema={StageSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          axios.post('http://localhost:8080/stages', values)
+          axiosInstance.post('/stages', values) 
             .then(response => {
               setSuccessMessage('Stage ajouté avec succès!');
-              resetForm(); // Réinitialiser le formulaire après soumission
+              resetForm(); 
               setSubmitting(false);
             })
             .catch(error => {
-              console.error('Erreur lors de l\'ajout du stage', error);
+              console.error("Erreur lors de l'ajout du stage :", error);
               setSubmitting(false);
             });
         }}

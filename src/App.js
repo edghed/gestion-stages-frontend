@@ -4,9 +4,18 @@ import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-ro
 import NavBar from './components/NavBar';
 import ListStudentsPage from './components/students/ListStudentsPage';
 import ViewStudentPage from './components/students/ViewStudentPage';
+import UpdateStudentForm from './components/students/UpdateStudentForm';
+import AddStudentForm from './components/students/AddStudentForm';
 import ListInternshipPage from './components/internships/ListInternshipsPage';
+import AddStageForm from './components/internships/AddStageForm';
+import InternshipItem from './components/internships/InternshipItem';
+import UpdateStageForm from './components/internships/UpdateStageForm';
+import ViewInternshipPage from './components/internships/UpdateStageForm';
+
+
+
 import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage'; // Import du formulaire d'inscription
+import RegisterPage from './components/RegisterPage';
 import { AuthProvider, useAuth } from './components/AuthContext';
 
 function PrivateRoute({ element }) {
@@ -36,10 +45,15 @@ function App() {
                             } 
                         />
                         <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} /> {/* Route pour l'inscription */}
+                        <Route path="/register" element={<RegisterPage />} /> 
                         <Route path="/students" element={<PrivateRoute element={<ListStudentsPage />} />} />
                         <Route path="/students/:id" element={<PrivateRoute element={<ViewStudentPage />} />} />
+                        <Route path="/students/update/:id" element={<PrivateRoute element={<UpdateStudentForm />} />} />
+                        <Route path="/add-student" element={<PrivateRoute element={<AddStudentForm />} />} />
                         <Route path="/stages" element={<PrivateRoute element={<ListInternshipPage />} />} />
+                        <Route path="/stages/:id" element={<PrivateRoute element={<ViewInternshipPage />} />} />
+                        <Route path="/stages/update/:id" element={<PrivateRoute element={<UpdateStageForm />} />} />
+                        <Route path="/add-stage" element={<PrivateRoute element={<AddStageForm />} />} />
                     </Routes>
                 </div>
             </Router>

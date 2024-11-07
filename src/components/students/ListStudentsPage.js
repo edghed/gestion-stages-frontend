@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../axiosInstance';
+import useAxios from '../useAxios';
+import StudentItem from './StudentItem';
 
 const ListStudentsPage = () => {
+    const axiosInstance = useAxios(); 
     const [students, setStudents] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axiosInstance.get('/students')
-            .then(response => {
-                if (Array.isArray(response.data)) {
-                    setStudents(response.data);
-                } else {
-                    setStudents([]);
-                }
-            })
-            .catch(error => {
+        const fetchStudents = async () => {
+            try {
+                const response = await axiosInstance.get('/students');
+                setStudents(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
                 console.error("Erreur lors de la récupération des étudiants :", error);
                 setError("Impossible de charger les étudiants.");
-            });
+            }
+        };
+        fetchStudents();
     }, []);
+
+    const handleDelete = (id) => {
+        setStudents(students.filter(student => student.id !== id));
+    };
 
     if (error) {
         return <p>{error}</p>;
@@ -26,10 +30,13 @@ const ListStudentsPage = () => {
 
     return (
         <div>
+            <h1>Liste des étudiants</h1>
             {students.length > 0 ? (
-                students.map(student => (
-                    <div key={student.id}>{student.name}</div>
-                ))
+                <ul className="list-group">
+                    {students.map(student => (
+                        <StudentItem key={student.id} student={student} onDelete={handleDelete} />
+                    ))}
+                </ul>
             ) : (
                 <p>Aucun étudiant trouvé.</p>
             )}

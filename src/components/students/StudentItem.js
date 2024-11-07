@@ -1,19 +1,20 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import useAxios from '../useAxios'; 
 
 function StudentItem({ student, onDelete }) {
-  const navigate = useNavigate(); // Utilisé pour naviguer vers la page d'update
+  const navigate = useNavigate();
+  const axiosInstance = useAxios(); 
 
-  // Fonction pour supprimer un étudiant
+  
   const handleDelete = () => {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer ${student.firstName} ${student.lastName} ?`)) {
-      axios.delete(`http://localhost:8080/students/${student.id}`)
+      axiosInstance.delete(`/students/${student.id}`) 
         .then(() => {
-          onDelete(student.id); // Appelle la fonction pour supprimer l'étudiant dans la liste
+          onDelete(student.id); 
         })
         .catch(error => {
-          console.error('Erreur lors de la suppression de l\'étudiant', error);
+          console.error("Erreur lors de la suppression de l'étudiant :", error);
         });
     }
   };

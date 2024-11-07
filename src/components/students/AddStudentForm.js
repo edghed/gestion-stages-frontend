@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import useAxios from '../useAxios'; 
 
-// Schéma de validation avec Yup
 const StudentSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, 'Le prénom est trop court!')
@@ -19,7 +18,8 @@ const StudentSchema = Yup.object().shape({
 });
 
 function AddStudentForm() {
-  const [successMessage, setSuccessMessage] = useState(''); // Message de succès après ajout
+  const axiosInstance = useAxios(); 
+  const [successMessage, setSuccessMessage] = useState(''); 
 
   return (
     <div>
@@ -33,14 +33,14 @@ function AddStudentForm() {
         }}
         validationSchema={StudentSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          axios.post('http://localhost:8080/students', values)
+          axiosInstance.post('/students', values) 
             .then(response => {
               setSuccessMessage('Étudiant ajouté avec succès!');
-              resetForm(); // Réinitialiser le formulaire après soumission
+              resetForm();
               setSubmitting(false);
             })
             .catch(error => {
-              console.error('Erreur lors de l\'ajout de l\'étudiant', error);
+              console.error("Erreur lors de l'ajout de l'étudiant :", error);
               setSubmitting(false);
             });
         }}

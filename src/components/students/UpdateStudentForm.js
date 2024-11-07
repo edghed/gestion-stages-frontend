@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import useAxios from '../useAxios'; 
 
-// Schéma de validation avec Yup
+
 const StudentSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, 'Le prénom est trop court!')
@@ -22,6 +22,7 @@ const StudentSchema = Yup.object().shape({
 function UpdateStudentForm() {
   const { id } = useParams(); // Récupérer l'ID de l'étudiant à modifier depuis l'URL
   const navigate = useNavigate(); // Utilisé pour rediriger après la mise à jour
+  const axiosInstance = useAxios(); // Utiliser l'instance Axios configurée avec le token
   const [student, setStudent] = useState(null); // Stocker les données de l'étudiant
   const [loading, setLoading] = useState(true); // Gestion du chargement
   const [error, setError] = useState(null); // Gestion des erreurs
@@ -29,7 +30,7 @@ function UpdateStudentForm() {
 
   // Récupérer les informations de l'étudiant à modifier
   useEffect(() => {
-    axios.get(`http://localhost:8080/students/${id}`)
+    axiosInstance.get(`/students/${id}`)
       .then(response => {
         setStudent(response.data); // Stocker les données de l'étudiant
         setLoading(false);
@@ -39,7 +40,7 @@ function UpdateStudentForm() {
         setError("Erreur lors du chargement de l'étudiant");
         setLoading(false);
       });
-  }, [id]);
+  }, [id, axiosInstance]);
 
   if (loading) {
     return <p>Chargement des informations de l'étudiant...</p>;
@@ -62,7 +63,7 @@ function UpdateStudentForm() {
           }}
           validationSchema={StudentSchema}
           onSubmit={(values, { setSubmitting }) => {
-            axios.put(`http://localhost:8080/students/${id}`, values)
+            axiosInstance.put(`/students/${id}`, values) // Utilisation de axiosInstance pour l'appel PUT
               .then(response => {
                 setSuccessMessage("Étudiant mis à jour avec succès !");
                 setSubmitting(false);
@@ -106,4 +107,3 @@ function UpdateStudentForm() {
 }
 
 export default UpdateStudentForm;
-

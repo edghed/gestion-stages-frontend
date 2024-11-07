@@ -1,36 +1,46 @@
-// src/components/internships/ListInternshipPage.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '../AuthContext';
+import useAxios from '../useAxios';
+import InternshipItem from './InternshipItem';
 
 const ListInternshipPage = () => {
-    const { authToken } = useAuth();
+    const axiosInstance = useAxios(); 
     const [internships, setInternships] = useState([]);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchInternships = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/stages', {
-                    headers: { Authorization: `Bearer ${authToken}` }
-                });
-                setInternships(response.data);
-            } catch (err) {
-                setError("Erreur lors du chargement des stages");
+                const response = await axiosInstance.get('/stages');
+                setInternships(Array.isArray(response.data) ? response.data : []);
+            } catch (error) {
+                console.error("Erreur lors du chargement des stages :", error);
+                setError("Impossible de charger les stages.");
             }
         };
+        
         fetchInternships();
-    }, [authToken]);
+    }, []);
+
+   
+    const handleDelete = (id) => {
+        setInternships(internships.filter(internship => internship.id !== id));
+    };
+
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
         <div>
             <h2>Liste des stages</h2>
-            {error ? <p>{error}</p> : (
-                <ul>
+            {internships.length > 0 ? (
+                <ul className="list-group">
                     {internships.map(internship => (
-                        <li key={internship.id}>{internship.name}</li>
+                        <InternshipItem key={internship.id} stage={internship} onDelete={handleDelete} />
                     ))}
                 </ul>
+            ) : (
+                <p>Aucun stage trouvé.</p>
             )}
         </div>
     );

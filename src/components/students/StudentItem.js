@@ -26,13 +26,13 @@ function StudentItem({ student, onDelete }) {
       <p>Email : {student.email}</p>
       <p>Département : {student.department}</p>
       
-      {/* Bouton pour voir les détails */}
+      {}
       <Link to={`/students/${student.id}`} className="btn btn-primary">Voir détails</Link>
 
-      {/* Bouton pour aller à la page de mise à jour */}
+     
       <button onClick={() => navigate(`/students/update/${student.id}`)} className="btn btn-warning">Modifier</button>
       
-      {/* Bouton pour supprimer */}
+     
       <button onClick={handleDelete} className="btn btn-danger">Supprimer</button>
     </li>
   );

@@ -1,4 +1,3 @@
-// NavBar.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -7,50 +6,62 @@ function NavBar() {
   const { isAuthenticated, userRole, logout } = useAuth();
 
   return (
-    <nav style={{ backgroundColor: '#333', padding: '10px', display: 'flex', justifyContent: 'space-between' }}>
-      <div style={{ color: 'white', fontSize: '24px' }}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>Gestion Stages</Link>
-      </div>
-      <ul style={{ listStyle: 'none', display: 'flex', gap: '15px' }}>
-        {isAuthenticated && (
-          <>
-            <li>
-              <Link to="/stages" style={{ textDecoration: 'none', color: 'white' }}>Stages</Link>
-              {userRole === 'Role_Admin' && (
-                <Link to="/add-stage" style={{ textDecoration: 'none', color: 'white', marginLeft: '5px' }}>
-                  Ajouter un stage
-                </Link>
-              )}
-            </li>
-            {userRole === 'Role_Admin' && (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container-fluid">
+        <Link to="/" className="navbar-brand">Gestion Stages</Link>
+        
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            {isAuthenticated && (
               <>
-                <li>
-                  <Link to="/students" style={{ textDecoration: 'none', color: 'white' }}>Étudiants</Link>
-                  <Link to="/add-student" style={{ textDecoration: 'none', color: 'white', marginLeft: '5px' }}>
-                    Ajouter un étudiant
-                  </Link>
+                <li className="nav-item">
+                  <Link to="/stages" className="nav-link">Stages</Link>
                 </li>
-                <li>
-                  <Link to="/users" style={{ textDecoration: 'none', color: 'white' }}>Users</Link>
-                  <Link to="/add-user" style={{ textDecoration: 'none', color: 'white', marginLeft: '5px' }}>
-                    Ajouter un utilisateur
-                  </Link>
+                
+                {userRole === 'Role_Admin' && (
+                  <>
+                    <li className="nav-item">
+                      <Link to="/add-stage" className="nav-link" title="Ajouter un stage">
+                        <i className="fas fa-plus"></i>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/students" className="nav-link">Étudiants</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/add-student" className="nav-link" title="Ajouter un étudiant">
+                        <i className="fas fa-plus"></i>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/users" className="nav-link">Utilisateurs</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/add-user" className="nav-link" title="Ajouter un utilisateur">
+                        <i className="fas fa-plus"></i>
+                      </Link>
+                    </li>
+                  </>
+                )}
+                
+                <li className="nav-item">
+                  <button onClick={logout} className="btn btn-outline-light ms-2">Déconnexion</button>
                 </li>
               </>
             )}
-            <li>
-              <button onClick={logout} style={{ backgroundColor: 'transparent', color: 'white', border: 'none', cursor: 'pointer' }}>
-                Déconnexion
-              </button>
-            </li>
-          </>
-        )}
-        {!isAuthenticated && (
-          <li>
-            <Link to="/login" style={{ textDecoration: 'none', color: 'white' }}>Connexion</Link>
-          </li>
-        )}
-      </ul>
+            
+            {!isAuthenticated && (
+              <li className="nav-item">
+                <Link to="/login" className="nav-link">Connexion</Link>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 }

@@ -1,4 +1,3 @@
-// AddStageForm.js
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -19,14 +18,15 @@ const StageSchema = Yup.object().shape({
 function AddStageForm() {
   const axiosInstance = useAxios();
   const [successMessage, setSuccessMessage] = useState('');
-  const { userRole } = useAuth(); // Accéder au rôle utilisateur
+  const { userRole } = useAuth(); 
 
-  if (userRole !== 'Role_Admin') return null; // Si l'utilisateur n'est pas admin, masquer le formulaire
+  if (userRole !== 'Role_Admin') return null; 
 
   return (
-    <div>
-      <h1>Ajouter un Stage</h1>
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+    <div className="container mt-5">
+      <h1 className="mb-4">Ajouter un Stage</h1>
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
+      
       <Formik
         initialValues={{ title: '', description: '', location: '' }}
         validationSchema={StageSchema}
@@ -45,23 +45,45 @@ function AddStageForm() {
       >
         {({ isSubmitting }) => (
           <Form>
-            <div>
-              <label>Titre :</label>
-              <Field type="text" name="title" />
-              <ErrorMessage name="title" component="div" style={{ color: 'red' }} />
+            <div className="mb-3">
+              <label htmlFor="title" className="form-label">Titre :</label>
+              <Field 
+                type="text" 
+                id="title" 
+                name="title" 
+                className="form-control" 
+              />
+              <ErrorMessage name="title" component="div" className="text-danger" />
             </div>
-            <div>
-              <label>Description :</label>
-              <Field type="text" name="description" />
-              <ErrorMessage name="description" component="div" style={{ color: 'red' }} />
+
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">Description :</label>
+              <Field 
+                type="text" 
+                id="description" 
+                name="description" 
+                className="form-control" 
+              />
+              <ErrorMessage name="description" component="div" className="text-danger" />
             </div>
-            <div>
-              <label>Lieu :</label>
-              <Field type="text" name="location" />
-              <ErrorMessage name="location" component="div" style={{ color: 'red' }} />
+
+            <div className="mb-3">
+              <label htmlFor="location" className="form-label">Lieu :</label>
+              <Field 
+                type="text" 
+                id="location" 
+                name="location" 
+                className="form-control" 
+              />
+              <ErrorMessage name="location" component="div" className="text-danger" />
             </div>
-            <div>
-              <button type="submit" disabled={isSubmitting}>
+
+            <div className="mb-3">
+              <button 
+                type="submit" 
+                className="btn btn-primary" 
+                disabled={isSubmitting}
+              >
                 Ajouter Stage
               </button>
             </div>

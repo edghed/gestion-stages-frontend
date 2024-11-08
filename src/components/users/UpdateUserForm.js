@@ -38,7 +38,7 @@ function UpdateUserForm() {
           initialValues={{
             username: user.username,
             password: '',
-            role: user.role || 'Role_User'  // Set a default role if undefined
+            role: user.role || 'Role_User'  
           }}
           validationSchema={UserSchema}
           onSubmit={async (values, { setSubmitting }) => {

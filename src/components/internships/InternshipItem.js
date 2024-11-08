@@ -1,4 +1,3 @@
-// InternshipItem.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAxios from '../useAxios';
@@ -22,32 +21,38 @@ function InternshipItem({ stage, onDelete }) {
   };
 
   return (
-    <li className="list-group-item">
-      <h3>{stage.title}</h3>
-      <p>Description : {stage.description}</p>
-      <p>Date de début : {stage.dateDebut}</p>
-      <p>Date de fin : {stage.dateFin}</p>
+    <li className="list-group-item d-flex justify-content-between align-items-start">
+      <div>
+        <h3>{stage.title}</h3>
+        <p><strong>Description :</strong> {stage.description}</p>
+        <p><strong>Date de début :</strong> {stage.dateDebut}</p>
+        <p><strong>Date de fin :</strong> {stage.dateFin}</p>
+      </div>
 
-      {/* Lien pour voir les détails, accessible à tous */}
-      <Link to={`/stages/${stage.id}`} className="btn btn-primary" style={{ marginRight: '10px' }}>
-        Voir détails
-      </Link>
+      <div className="btn-group">
+        {/* Lien pour voir les détails, accessible à tous */}
+        <Link to={`/stages/${stage.id}`} className="btn btn-primary btn-sm">
+          Voir détails
+        </Link>
 
-      {/* Boutons de modification et suppression accessibles uniquement aux administrateurs */}
-      {userRole === 'Role_Admin' && (
-        <>
-          <button
-            onClick={() => navigate(`/update-stage/${stage.id}`)}
-            className="btn btn-warning"
-            style={{ marginRight: '10px' }}
-          >
-            Modifier
-          </button>
-          <button onClick={handleDelete} className="btn btn-danger">
-            Supprimer
-          </button>
-        </>
-      )}
+        {/* Boutons de modification et suppression accessibles uniquement aux administrateurs */}
+        {userRole === 'Role_Admin' && (
+          <>
+            <button
+              onClick={() => navigate(`/update-stage/${stage.id}`)}
+              className="btn btn-warning btn-sm"
+            >
+              Modifier
+            </button>
+            <button 
+              onClick={handleDelete} 
+              className="btn btn-danger btn-sm"
+            >
+              Supprimer
+            </button>
+          </>
+        )}
+      </div>
     </li>
   );
 }

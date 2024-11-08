@@ -1,4 +1,4 @@
-// LoginPage.js
+
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
@@ -22,13 +22,12 @@ const LoginPage = () => {
             const { token, role } = response.data;
 
             if (token && role) {
-                // Stocke les informations d'authentification dans le contexte
+               
                 login(token, role);
 
-                // Redirige vers le tableau de bord approprié
-                if (role === 'ROLE_ADMIN') {
+                if (role === 'Role_ADMIN') {
                     navigate('/admin-dashboard');
-                } else if (role === 'ROLE_STUDENT') {
+                } else if (role === 'Role_STUDENT') {
                     navigate('/student-dashboard');
                 } else {
                     navigate('/access-denied');
@@ -43,24 +42,36 @@ const LoginPage = () => {
     };
 
     return (
-        <div>
-            <h2>Connexion</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Nom d'utilisateur"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Mot de passe"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="submit">Se connecter</button>
-            </form>
+        <div className="container d-flex align-items-center justify-content-center min-vh-100">
+            <div className="card p-4 shadow-lg" style={{ maxWidth: '400px', width: '100%' }}>
+                <h2 className="text-center mb-4">Connexion</h2>
+                {error && <div className="alert alert-danger" role="alert">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label htmlFor="username" className="form-label">Nom d'utilisateur</label>
+                        <input
+                            type="text"
+                            id="username"
+                            className="form-control"
+                            placeholder="Nom d'utilisateur"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Mot de passe</label>
+                        <input
+                            type="password"
+                            id="password"
+                            className="form-control"
+                            placeholder="Mot de passe"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary w-100">Se connecter</button>
+                </form>
+            </div>
         </div>
     );
 };

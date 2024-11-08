@@ -21,12 +21,12 @@ function UpdateStageForm() {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const { userRole } = useAuth();
-  const [accessRestricted, setAccessRestricted] = useState(false); // Nouvel état pour gérer l'accès
+  const [accessRestricted, setAccessRestricted] = useState(false); 
 
   useEffect(() => {
     if (userRole !== 'Role_Admin') {
-      setAccessRestricted(true); // Restreindre l'accès si l'utilisateur n'est pas admin
-      setLoading(false); // Arrêter le chargement
+      setAccessRestricted(true); 
+      setLoading(false); 
       return;
     }
 
@@ -46,16 +46,16 @@ function UpdateStageForm() {
   }, [id, axiosInstance, userRole]);
 
   if (accessRestricted) {
-    return <p>Accès restreint : vous n'avez pas la permission de modifier ce stage.</p>;
+    return <div className="alert alert-danger">Accès restreint : vous n'avez pas la permission de modifier ce stage.</div>;
   }
 
   if (loading) return <p>Chargement des informations du stage...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
-    <div>
+    <div className="container mt-5">
       <h1>Modifier le Stage</h1>
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
       {stage && (
         <Formik
           initialValues={{
@@ -81,28 +81,48 @@ function UpdateStageForm() {
         >
           {({ isSubmitting }) => (
             <Form>
-              <div>
-                <label>Titre :</label>
-                <Field type="text" name="title" />
-                <ErrorMessage name="title" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="title" className="form-label">Titre :</label>
+                <Field
+                  type="text"
+                  name="title"
+                  id="title"
+                  className="form-control"
+                />
+                <ErrorMessage name="title" component="div" className="text-danger" />
               </div>
-              <div>
-                <label>Description :</label>
-                <Field type="text" name="description" />
-                <ErrorMessage name="description" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="description" className="form-label">Description :</label>
+                <Field
+                  type="text"
+                  name="description"
+                  id="description"
+                  className="form-control"
+                />
+                <ErrorMessage name="description" component="div" className="text-danger" />
               </div>
-              <div>
-                <label>Date de début :</label>
-                <Field type="date" name="dateDebut" />
-                <ErrorMessage name="dateDebut" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="dateDebut" className="form-label">Date de début :</label>
+                <Field
+                  type="date"
+                  name="dateDebut"
+                  id="dateDebut"
+                  className="form-control"
+                />
+                <ErrorMessage name="dateDebut" component="div" className="text-danger" />
               </div>
-              <div>
-                <label>Date de fin :</label>
-                <Field type="date" name="dateFin" />
-                <ErrorMessage name="dateFin" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="dateFin" className="form-label">Date de fin :</label>
+                <Field
+                  type="date"
+                  name="dateFin"
+                  id="dateFin"
+                  className="form-control"
+                />
+                <ErrorMessage name="dateFin" component="div" className="text-danger" />
               </div>
-              <div>
-                <button type="submit" disabled={isSubmitting}>
+              <div className="mb-3">
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                   Mettre à jour
                 </button>
               </div>

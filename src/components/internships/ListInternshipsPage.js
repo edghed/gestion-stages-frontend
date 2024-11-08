@@ -10,7 +10,7 @@ const ListInternshipPage = () => {
   const [internships, setInternships] = useState([]);
   const [error, setError] = useState(null);
   const { userRole } = useAuth();
-  const navigate = useNavigate(); // Utilisation de `useNavigate`
+  const navigate = useNavigate(); 
 
   const fetchInternships = async () => {
     try {
@@ -36,7 +36,7 @@ const ListInternshipPage = () => {
     <div>
       <h2>Liste des stages</h2>
 
-      {/* Bouton d'ajout visible uniquement pour les administrateurs */}
+      {}
       {userRole === 'Role_Admin' && (
         <button onClick={() => navigate('/add-stage')} className="btn btn-primary">
           Ajouter un stage
@@ -49,7 +49,7 @@ const ListInternshipPage = () => {
             <InternshipItem
               key={internship.id}
               stage={internship}
-              onDelete={userRole === 'Role_Admin' ? handleDelete : null} // Bouton de suppression uniquement pour admin
+              onDelete={userRole === 'Role_Admin' ? handleDelete : null} 
             />
           ))}
         </ul>

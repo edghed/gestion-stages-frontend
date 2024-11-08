@@ -1,4 +1,3 @@
-// UpdateStudentForm.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -28,14 +27,14 @@ function UpdateStudentForm() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const { userRole } = useAuth(); // Toujours appeler le hook ici
+  const { userRole } = useAuth(); 
 
-  // Utilisation inconditionnelle de useEffect
+ 
   useEffect(() => {
-    if (userRole === 'ROLE_Admin') {
+    if (userRole === 'Role_Admin') {
       axiosInstance.get(`/students/${id}`)
         .then(response => {
-          setStudent(response.data);
+          setStudent(response.data); 
           setLoading(false);
         })
         .catch(error => {
@@ -44,23 +43,26 @@ function UpdateStudentForm() {
           setLoading(false);
         });
     } else {
-      setLoading(false); // Arrêter le chargement pour les utilisateurs non autorisés
+      setLoading(false);
     }
   }, [id, axiosInstance, userRole]);
 
   if (loading) return <p>Chargement des informations de l'étudiant...</p>;
+
   
-  // Vérification des autorisations après le chargement
   if (userRole !== 'Role_Admin') {
     return <p>Accès restreint : seuls les administrateurs peuvent modifier les informations d'un étudiant.</p>;
   }
 
-  if (error) return <p>{error}</p>;
+  if (error) return <p className="text-danger">{error}</p>;
+
+  
+  if (!student) return <p>Aucun étudiant trouvé avec cet ID.</p>;
 
   return (
-    <div>
+    <div className="container mt-5">
       <h1>Modifier l'étudiant</h1>
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
       {student && (
         <Formik
           initialValues={{
@@ -84,23 +86,38 @@ function UpdateStudentForm() {
         >
           {({ isSubmitting }) => (
             <Form>
-              <div>
-                <label>Prénom :</label>
-                <Field type="text" name="firstName" />
-                <ErrorMessage name="firstName" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="firstName" className="form-label">Prénom :</label>
+                <Field
+                  type="text"
+                  name="firstName"
+                  id="firstName"
+                  className="form-control"
+                />
+                <ErrorMessage name="firstName" component="div" className="text-danger" />
               </div>
-              <div>
-                <label>Nom :</label>
-                <Field type="text" name="lastName" />
-                <ErrorMessage name="lastName" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="lastName" className="form-label">Nom :</label>
+                <Field
+                  type="text"
+                  name="lastName"
+                  id="lastName"
+                  className="form-control"
+                />
+                <ErrorMessage name="lastName" component="div" className="text-danger" />
               </div>
-              <div>
-                <label>Email :</label>
-                <Field type="email" name="email" />
-                <ErrorMessage name="email" component="div" style={{ color: 'red' }} />
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">Email :</label>
+                <Field
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="form-control"
+                />
+                <ErrorMessage name="email" component="div" className="text-danger" />
               </div>
-              <div>
-                <button type="submit" disabled={isSubmitting}>
+              <div className="mb-3">
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                   Mettre à jour
                 </button>
               </div>

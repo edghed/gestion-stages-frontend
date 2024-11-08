@@ -1,8 +1,9 @@
+// AddStageForm.js
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import useAxios from '../useAxios'; 
-
+import useAxios from '../useAxios';
+import { useAuth } from '../AuthContext';
 
 const StageSchema = Yup.object().shape({
   title: Yup.string()
@@ -16,25 +17,24 @@ const StageSchema = Yup.object().shape({
 });
 
 function AddStageForm() {
-  const axiosInstance = useAxios(); 
-  const [successMessage, setSuccessMessage] = useState(''); 
+  const axiosInstance = useAxios();
+  const [successMessage, setSuccessMessage] = useState('');
+  const { userRole } = useAuth(); // Accéder au rôle utilisateur
+
+  if (userRole !== 'Role_Admin') return null; // Si l'utilisateur n'est pas admin, masquer le formulaire
 
   return (
     <div>
       <h1>Ajouter un Stage</h1>
       {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
       <Formik
-        initialValues={{
-          title: '',
-          description: '',
-          location: '',
-        }}
+        initialValues={{ title: '', description: '', location: '' }}
         validationSchema={StageSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          axiosInstance.post('/stages', values) 
+          axiosInstance.post('/stages', values)
             .then(response => {
               setSuccessMessage('Stage ajouté avec succès!');
-              resetForm(); 
+              resetForm();
               setSubmitting(false);
             })
             .catch(error => {

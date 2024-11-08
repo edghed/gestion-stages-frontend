@@ -3,15 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import useAxios from '../useAxios';
+import { useAuth } from '../AuthContext';
 
 const StageSchema = Yup.object().shape({
-  title: Yup.string()
-    .min(2, 'Le titre est trop court!')
-    .max(50, 'Le titre est trop long!')
-    .required('Le titre est obligatoire'),
-  description: Yup.string()
-    .min(10, 'La description est trop courte!')
-    .required('La description est obligatoire'),
+  title: Yup.string().min(2, 'Le titre est trop court!').max(50, 'Le titre est trop long!').required('Le titre est obligatoire'),
+  description: Yup.string().min(10, 'La description est trop courte!').required('La description est obligatoire'),
   dateDebut: Yup.date().required('La date de début est obligatoire'),
   dateFin: Yup.date().required('La date de fin est obligatoire'),
 });
@@ -19,32 +15,42 @@ const StageSchema = Yup.object().shape({
 function UpdateStageForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const axiosInstance = useAxios(); 
+  const axiosInstance = useAxios();
   const [stage, setStage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const { userRole } = useAuth();
+  const [accessRestricted, setAccessRestricted] = useState(false); // Nouvel état pour gérer l'accès
 
   useEffect(() => {
-    axiosInstance.get(`/stages/${id}`)
-      .then(response => {
+    if (userRole !== 'Role_Admin') {
+      setAccessRestricted(true); // Restreindre l'accès si l'utilisateur n'est pas admin
+      setLoading(false); // Arrêter le chargement
+      return;
+    }
+
+    const fetchStage = async () => {
+      try {
+        const response = await axiosInstance.get(`/stages/${id}`);
         setStage(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Erreur lors de la récupération du stage', error);
         setError("Erreur lors du chargement du stage");
+      } finally {
         setLoading(false);
-      });
-  }, [id, axiosInstance]);
+      }
+    };
 
-  if (loading) {
-    return <p>Chargement des informations du stage...</p>;
+    fetchStage();
+  }, [id, axiosInstance, userRole]);
+
+  if (accessRestricted) {
+    return <p>Accès restreint : vous n'avez pas la permission de modifier ce stage.</p>;
   }
 
-  if (error) {
-    return <p>{error}</p>;
-  }
+  if (loading) return <p>Chargement des informations du stage...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>

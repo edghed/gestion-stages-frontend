@@ -6,6 +6,7 @@ function StudentItem({ student, onDelete }) {
   const navigate = useNavigate();
   const axiosInstance = useAxios(); 
 
+
   
   const handleDelete = () => {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer ${student.firstName} ${student.lastName} ?`)) {

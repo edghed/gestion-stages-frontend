@@ -23,7 +23,7 @@ function ListSupervisorsPage() {
         ))}
       </ul>
 
-      {/* Afficher les détails du tuteur sélectionné */}
+      {}
       {selectedSupervisor && (
         <div style={{ marginTop: '20px' }}>
           <h2>Résumé de {selectedSupervisor.name}</h2>

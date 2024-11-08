@@ -4,26 +4,26 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    // Rôle par défaut pour tous les utilisateurs inscrits : "Role_Student"
+    const defaultRole = 'Role_Student';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/api/auth/register', {
-                firstName,
-                lastName,
-                email,
-                password
+                username,
+                password,
+                role: defaultRole // Définit le rôle à "Role_Student"
             });
-            console.log(response.data); // Affichez la réponse du serveur
-            navigate('/login'); // Redirige vers la page de connexion après l'inscription
+            console.log(response.data); 
+            navigate('/login'); // Redirection vers la page de connexion après l'inscription
         } catch (err) {
-            console.error(err.response); // Affichez l'erreur pour plus de détails
+            console.error(err.response);
             setError("Échec de l'inscription. Veuillez réessayer.");
         }
     };
@@ -35,23 +35,9 @@ const RegisterPage = () => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Prénom"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Nom de famille"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                />
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Nom d'utilisateur"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
                 <input

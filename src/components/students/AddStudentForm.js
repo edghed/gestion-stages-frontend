@@ -1,7 +1,9 @@
+// AddStudentForm.js
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import useAxios from '../useAxios'; 
+import useAxios from '../useAxios';
+import { useAuth } from '../AuthContext';
 
 const StudentSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -18,8 +20,14 @@ const StudentSchema = Yup.object().shape({
 });
 
 function AddStudentForm() {
-  const axiosInstance = useAxios(); 
-  const [successMessage, setSuccessMessage] = useState(''); 
+  const axiosInstance = useAxios();
+  const [successMessage, setSuccessMessage] = useState('');
+  const { userRole } = useAuth();
+
+  // Seul un admin peut ajouter un étudiant
+  if (userRole !== 'Role_Admin') {
+    return <p>Accès restreint : seuls les administrateurs peuvent ajouter un étudiant.</p>;
+  }
 
   return (
     <div>
@@ -33,8 +41,8 @@ function AddStudentForm() {
         }}
         validationSchema={StudentSchema}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          axiosInstance.post('/students', values) 
-            .then(response => {
+          axiosInstance.post('/students', values)
+            .then(() => {
               setSuccessMessage('Étudiant ajouté avec succès!');
               resetForm();
               setSubmitting(false);
